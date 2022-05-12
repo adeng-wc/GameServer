@@ -1,5 +1,6 @@
-package com.adeng.gameServer.room.socket;
+package com.adeng.gameServer.room.web.socket;
 
+import com.adeng.gameServer.room.bo.UseSocketSessionBo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @Component
 @ServerEndpoint("/websocket/{name}")
-public class WebSocket {
+public class RoomSocket {
 
     /**
      * 与某个客户端的连接对话，需要通过它来给客户端发送消息
@@ -32,10 +33,16 @@ public class WebSocket {
     /**
      * 用于存所有的连接服务的客户端，这个对象存储是安全的
      */
-    private static ConcurrentHashMap<String, WebSocket> webSocketSet = new ConcurrentHashMap<>();
+    private static ConcurrentHashMap<String, RoomSocket> webSocketSet = new ConcurrentHashMap<>();
 
     @OnOpen
     public void OnOpen(Session session, @PathParam(value = "name") String name) {
+
+        UseSocketSessionBo bo = new UseSocketSessionBo();
+        bo.setSession(session);
+        bo.setName(name);
+//        bo.setId();
+
         this.session = session;
         this.name = name;
         // name是用来表示唯一客户端，如果需要指定发送，需要指定发送通过name来区分
